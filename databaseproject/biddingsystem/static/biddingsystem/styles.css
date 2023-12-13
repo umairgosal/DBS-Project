@@ -1,0 +1,169 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, label, input, form {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+}
+
+.heading {
+    margin: 10px;
+}
+
+#createListing {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#createListing h3 {
+    color: #333;
+}
+
+#createListing label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#createListing input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#createListing__category {
+    margin: 3px;
+}
+
+#createListing input[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#createListing input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Optional: Style the file input button */
+#createListing__ input[type="file"] {
+    display: none;
+}
+
+#createListing__ label[for="file"] {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+#createListing__ label[for="file"]:hover {
+    background-color: #45a049;
+}
+
+
+.listing {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.listingTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.listingTopLeft {
+    width: 40%;
+}
+
+.listingTopLeft__image {
+    max-width: 100%;
+    height: auto;
+}
+
+.listingTopRight {
+    width: 60%;
+    padding-left: 20px;
+}
+
+.listingTopRight__title {
+    font-size: 24px;
+    margin: 0;
+}
+
+.listingTopRight__price {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.listingTopRight__category {
+    font-size: 16px;
+    color: #666;
+}
+
+.listingBottom {
+    margin-top: 20px;
+}
+
+.listingBottom__description {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.listingBottom__comments {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.listingTopRight {
+    flex: 0.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.listingBottom__bid {
+    margin-top: 20px;
+}
+
+#bidForm {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+}
+
+#bidAmount {
+    margin-top: 5px;
+    padding: 5px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
