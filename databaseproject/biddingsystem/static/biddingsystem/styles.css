@@ -74,8 +74,126 @@ body {
 }
 
 
+
 .listing {
-    max-width: 800px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    overflow: hidden;
+}
+
+.listingTop {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.listingTopLeft__image {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.listingTopRightDetails {
+    margin-bottom: 10px;
+}
+
+.listingTopRightDetails__title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.listingTopRightDetails__category {
+    color: #555;
+    margin: 0;
+}
+
+.listingTopRightDetails__price {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #27ae60;
+    margin: 0;
+}
+
+.listingBottom {
+    padding: 20px;
+}
+
+.listingBottom__bid {
+    margin-bottom: 20px;
+}
+
+.listingBottom__bid form {
+    display: flex;
+    align-items: center;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    background-color: #3498db;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.listingBottom__description {
+    line-height: 1.6;
+}
+
+.listingBottomComments {
+    margin-top: 20px;
+}
+
+.listingBottomComments__comment {
+    margin-bottom: 10px;
+}
+
+.listingBottomComments__comment_username {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.listingBottomComments_comment_text {
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .listingTop {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .listingTopLeft__image {
+        margin-bottom: 10px;
+    }
+
+    .listingTopRightDetails {
+        text-align: center;
+    }
+
+    .listingBottom__bid form {
+        flex-direction: column;
+    }
+}
+
+.register {
+    max-width: 400px;
     margin: 20px auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -84,86 +202,155 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.listingTop {
-    display: flex;
-    justify-content: space-between;
-}
-
-.listingTopLeft {
-    width: 40%;
-}
-
-.listingTopLeft__image {
-    max-width: 100%;
-    height: auto;
-}
-
-.listingTopRight {
-    width: 60%;
-    padding-left: 20px;
-}
-
-.listingTopRight__title {
+.register h3 {
     font-size: 24px;
-    margin: 0;
+    margin-bottom: 20px;
 }
 
-.listingTopRight__price {
-    font-size: 18px;
-    margin: 5px 0;
+.register label {
+    display: block;
+    margin-bottom: 5px;
 }
 
-.listingTopRight__category {
-    font-size: 16px;
-    color: #666;
-}
-
-.listingBottom {
-    margin-top: 20px;
-}
-
-.listingBottom__description {
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-.listingBottom__comments {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #666;
-}
-
-.listingTopRight {
-    flex: 0.5;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.listingBottom__bid {
-    margin-top: 20px;
-}
-
-#bidForm {
-    display: flex;
-    flex-direction: column;
-    max-width: 300px;
-}
-
-#bidAmount {
-    margin-top: 5px;
-    padding: 5px;
-}
-
-button {
-    margin-top: 10px;
+.register input {
+    width: 100%;
     padding: 8px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-button:hover {
+/* Styling for the Register button */
+#register__button {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#register__button:hover {
     background-color: #45a049;
 }
+
+/* Optional: Style for better readability on small screens */
+@media (max-width: 600px) {
+    .register {
+        width: 90%;
+    }
+}
+
+/* CSS for the login page */
+.login {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.login label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Styling for the Login button */
+.login input[type="submit"] {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Optional: Style for better readability on small screens */
+@media (max-width: 600px) {
+    .login {
+        width: 90%;
+    }
+}
+
+
+/* Container styling */
+.active__listingsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  /* Listing styling */
+  .active__listing {
+    display: flex;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Left side (image) styling */
+  .active__listingLeft {
+    flex: 1;
+  }
+  
+  .active__listingImage {
+    width: 300px;
+    object-fit: contain;
+    border-right: 1px solid #ddd;
+  }
+  
+  /* Right side styling */
+  .active__listingRight {
+    flex: 0.4;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .active__listingRightTop {
+    margin-bottom: 10px;
+  }
+  
+  .active__listingRightTop h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .active__listingRightTop p {
+    color: #777;
+  }
+  
+  /* Price styling */
+  .active__listingRight p {
+    margin: 0;
+    color: #333;
+  }
+  
+  

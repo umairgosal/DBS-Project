@@ -20,10 +20,10 @@
     </div>
     <div class="listingBottom">
         <div class="listingBottom__bid">
-            <form id="bidForm">
+            <form action="">
                 <label for="bidAmount">Enter your bid amount:</label>
-                <input type="text" id="bidAmount" name="bidAmount" required>
-                <button type="button" onclick="makeBid()">Place Bid</button>
+                <input type="number" id="bidAmount" min="{{ minvalue }}" name="bidAmount" required>
+                <input type="submit" value="Make a Bid">
             </form>
         </div>
         <div class="listingBottom__description">
@@ -52,8 +52,11 @@
             Color: [Mention the exterior color]
             Don't miss the opportunity to own this reliable and economical Mehran 800cc compact car. Bid now and embark on a journey of efficiency, style, and affordability!
         </div>
-        <div class="listingBottom__comments">
-            <p>Comments here</p>
+        <div class="listingBottomComments">
+            <div class="listingBottomComments__comment">
+                <strong class="listingBottomComments__comment_username">Saad</strong>
+                <p class="listingBottomComments_comment_text">Good product</p>
+            </div>
         </div>
     </div>
 </div>
