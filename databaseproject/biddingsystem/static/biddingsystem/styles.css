@@ -458,3 +458,57 @@ input[type="submit"] {
     margin: 5px 0;
   }
   
+
+  .wallet {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .wallet__details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wallet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Wallet Details */
+  .wallet__details {
+    flex-grow: 1;
+  }
+  
+  .wallet__credit_heading {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  .wallet__credit__amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 5px 0;
+  }
+  
+  /* Top Up Button */
+  .wallet button {
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Remove underlines from anchor tags within buttons */
+  .wallet button a {
+    text-decoration: none;
+    color: inherit;
+  }

@@ -119,4 +119,7 @@ def listing(request, listing_id):
 
 
 def profile(request):
-    return render(request, "biddingsystem/profile.html")
+    return render(request, "biddingsystem/profile.html", {
+        "self_profile": True,
+        "listings": get_all_listings()
+    })
