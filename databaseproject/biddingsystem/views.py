@@ -3,7 +3,21 @@ from django.db import connection, IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
+# import pyrebase
 
+
+# firebaseConfig = {
+# "apiKey": "AIzaSyA0D4DfmdtOWCjSXutjiWaEPFcrVW124vY",
+# "authDomain": "biddingsystem-55752.firebaseapp.com",
+# "projectId": "biddingsystem-55752",
+# "storageBucket": "biddingsystem-55752.appspot.com",
+# "messagingSenderId": "111594590720",
+# "appId": "1:111594590720:web:2a9f5eba258eecada3fee5",
+# "measurementId": "G-8060RX134X"
+# }
+
+# firebase = pyrebase.initialize_app(firebaseConfig)
+# storage = firebase.storage()
 
 def my_custom_sql():
     with connection.cursor() as cursor:
@@ -61,6 +75,18 @@ def index(request):
     })
 
 def create(request):
+    if request.method == "POST":
+        title = request.POST["title"]
+        description = request.POST["description"]
+        base_price = request.POST["base_price"]
+        category = request.POST["category"]
+        image = request.POST["image"]
+
+        query = "INSERT INTO listing (lister, title, description, base_price, current_price, category, time_created) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', NOW())".format(request.user.username, title, description, base_price, base_price, category)
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+
+        return redirect(reverse(index))
     return render(request, "biddingsystem/createListing.html")
 
 def listing(request, listing_id):

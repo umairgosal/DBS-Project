@@ -7,6 +7,7 @@
 {% block body %}
     <h3 class="heading">Create Listing</h3>
     <form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
         <div id="createListing">
             <div id="createListing__title">
                 <label for="title">Title:</label>
@@ -23,18 +24,26 @@
             </div>
             <div id="createListing__basePrice">
                 <label for="basePrice">Base Price:</label>
-                <input type="number" name="basePrice">
+                <input type="number" name="base_price">
             </div>
             <div id="createListing__category">
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <!-- <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Select a Category
                     </button>
                     <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="#">Home</a></li>
                       <li><a class="dropdown-item" href="#">Automobile</a></li>
                       <li><a class="dropdown-item" href="#">Sports</a></li>
-                    </ul>
+                    </ul> -->
+                    <label for="category: ">Category: </label>
+
+                    <select name="category" id="categories">
+                        <option value="volvo">Volvo</option>
+                        <option value="saab">Saab</option>
+                        <option value="mercedes">Mercedes</option>
+                        <option value="audi">Audi</option>
+                    </select>
                   </div>
             </div>
             <div id="createListing__submit">

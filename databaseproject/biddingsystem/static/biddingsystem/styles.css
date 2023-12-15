@@ -353,4 +353,39 @@ input[type="submit"] {
     color: #333;
   }
   
+/* Select styling */
+#categories {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  /* Remove default arrow icon in some browsers */
+  #categories::-ms-expand {
+    display: none;
+  }
+  
+  /* Custom arrow icon */
+  #categories {
+    appearance: none;
+    background-image: url('path-to-arrow-icon.png'); /* Add your custom arrow icon */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  
+  /* Hover and focus effects */
+  #categories:hover, #categories:focus {
+    border-color: #aaa;
+  }
+  
+  /* Active state */
+  #categories:active {
+    border-color: #555;
+  }
   
