@@ -388,4 +388,73 @@ input[type="submit"] {
   #categories:active {
     border-color: #555;
   }
+
+
+/* Profile Container */
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Profile Credentials */
+  .profile__credentials {
+    flex-grow: 1;
+  }
+  
+  .profile__credentials_name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .profile__credentials_username {
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  /* Follow Button */
+  .profile__follow button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 50px;
+  }
+  
+  /* Profile Details */
+  .profile__details {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Profile Details Sections */
+  .profile__details > div {
+    margin-right: 20px;
+  }
+  
+  /* Profile Details Headings */
+  .followers__heading,
+  .following__heading,
+  listings__heading {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* Profile Details Counts */
+  .followers__count,
+  .following__count,
+  listings__count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 5px 0;
+  }
   

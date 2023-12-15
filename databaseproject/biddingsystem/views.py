@@ -19,7 +19,7 @@ from django.contrib.auth.models import User
 # firebase = pyrebase.initialize_app(firebaseConfig)
 # storage = firebase.storage()
 
-def my_custom_sql():
+def get_all_listings():
     with connection.cursor() as cursor:
         cursor.execute('SELECT * FROM listing')
         columns = [col[0] for col in cursor.description]
@@ -35,6 +35,9 @@ def get_listing(listingID):
         else:
             return None  # Handle the case where no row is found
 
+def place_bid(listing_id, bidder, bid_amount):
+    with connection.cursor() as cursor:
+        cursor.callproc("place_bid", [listing_id, bid_amount, bidder])
 
 # Create your views here.
 def register(request):
@@ -80,7 +83,7 @@ def log_out(request):
     return redirect(reverse(index))
 
 def index(request):
-    listings = my_custom_sql()
+    listings = get_all_listings()
     return render(request, "biddingsystem/index.html", {
         "listings": listings
     })
@@ -101,8 +104,19 @@ def create(request):
     return render(request, "biddingsystem/createListing.html")
 
 def listing(request, listing_id):
+    if request.method == "POST":
+        if request.POST.get('bidAmount'):
+            bid_amount = request.POST['bidAmount']
+            place_bid(listing_id, request.user.username, bid_amount)
+
+
     listing = get_listing(listing_id)
 
     return render(request, "biddingsystem/listing.html", {
-        "listing": listing
+        "listing": listing,
+        "bid_option": bool (request.user.username != listing["lister"])
     })
+
+
+def profile(request):
+    return render(request, "biddingsystem/profile.html")

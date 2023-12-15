@@ -19,14 +19,15 @@
         </div>
     </div>
     <div class="listingBottom">
-        {% if user.is_authenticated %}
-        <div class="listingBottom__bid">
-            <form action="">
-                <label for="bidAmount">Enter your bid amount:</label>
-                <input type="number" id="bidAmount" min="{{ minvalue }}" name="bidAmount" required>
-                <input type="submit" value="Make a Bid">
-            </form>
-        </div>
+        {% if user.is_authenticated and bid_option %}
+            <div class="listingBottom__bid">
+                <form action="{% url 'listing' listing.listing_id %}" method="POST">
+                    {% csrf_token %}
+                    <label for="bidAmount">Enter your bid amount:</label>
+                    <input type="number" id="bidAmount" min="{{ listing.current_price }}" name="bidAmount" required>
+                    <input type="submit" value="Make a Bid">
+                </form>
+            </div>
         {% endif %}
         <div class="listingBottom__description">
                 {{ listing.description }}

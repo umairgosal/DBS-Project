@@ -1,0 +1,41 @@
+{% extends "biddingsystem/layout.html" %} 
+
+{% block title %} 
+    {{ name }}
+{% endblock %} 
+
+{% block body %} 
+    <div class="profile">
+        <div class="profile__credentials">
+            <strong class="profile__credentials_name">
+                Saad
+            </strong>
+            <p class="profile__credentials_username">@saadashraf</p>
+        </div>
+        <div class="profile__follow">
+            <button onclick="followUser(this,e)">Follow</button>
+        </div>
+        <div class="profile__details">
+            <div class="profile__details__followers">
+                <p class="followers__heading">Followers</p>
+                <p class="followers__count">50</p>
+            </div>
+            <div class="profile__details__following">
+                <p class="following__heading">
+                    Following
+                </p>
+                <p class="following__count">
+                    46
+                </p>
+            </div>
+            <div class="profile__details__listings">
+                <p class="listings__heading">Listings</p>
+                <p class="listings__count">3</p>
+            </div>
+            <div class="profile__details__bids">
+                <p class="listings__heading">Bids</p>
+                <p class="listings__count">10</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
