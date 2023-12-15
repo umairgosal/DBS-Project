@@ -41,6 +41,7 @@
           <p>{{ listing.description }}</p>
         </div>
         <p>{{ listing.current_price }}</p>
+        <a href="{% url 'listing' listing.listing_id %}">View Listing</a>
       </div>
     </div>
     {% endfor %}

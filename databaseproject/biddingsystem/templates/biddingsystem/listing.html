@@ -12,13 +12,14 @@
         </div>
         <div class="listingTopRight">
             <div class="listingTopRightDetails">
-                <p class="listingTopRightDetails__title">Mehran 2019</p>
-                <p class="listingTopRightDetails__category">Automobile</p>
+                <p class="listingTopRightDetails__title">{{ listing.title }}</p>
+                <p class="listingTopRightDetails__category">{{ listing.category }}</p>
             </div>
-            <p class="listingTopRightDetails__price">500000</p>
+            <p class="listingTopRightDetails__price">{{ listing.current_price }}</p>
         </div>
     </div>
     <div class="listingBottom">
+        {% if user.is_authenticated %}
         <div class="listingBottom__bid">
             <form action="">
                 <label for="bidAmount">Enter your bid amount:</label>
@@ -26,31 +27,9 @@
                 <input type="submit" value="Make a Bid">
             </form>
         </div>
+        {% endif %}
         <div class="listingBottom__description">
-                Explore the perfect blend of efficiency and reliability with our featured Mehran 800cc compact car, now available for auction. This iconic vehicle is a testament to the renowned craftsmanship of Mehran, offering a smooth and comfortable driving experience in a compact and stylish package.
-
-            Key Features:
-
-            Compact Design: The Mehran 800cc is designed with practicality in mind, making it an ideal choice for urban commuting and navigating tight spaces. Its compact size ensures easy parking and maneuverability without compromising on comfort.
-
-            Fuel Efficiency: Experience cost-effective and eco-friendly driving with the impressive fuel efficiency of the Mehran 800cc. Perfect for those who seek to minimize their carbon footprint while enjoying a reliable mode of transportation.
-
-            Reliable Performance: Powered by a robust 800cc engine, this car delivers a reliable and consistent performance. Whether you're cruising through city streets or embarking on a road trip, the Mehran is up to the task.
-
-            Comfortable Interior: Step inside to discover a thoughtfully designed interior that prioritizes comfort and convenience. The well-crafted cabin provides ample space for both the driver and passengers, ensuring a pleasant journey every time.
-
-            Low Maintenance: Benefit from the low maintenance costs associated with the Mehran 800cc. Its simple yet durable design contributes to a hassle-free ownership experience, making it an excellent choice for budget-conscious individuals.
-
-            Safety Features: Equipped with essential safety features, including airbags and a sturdy frame, the Mehran prioritizes your well-being on the road. Drive with confidence knowing that safety is a top priority.
-
-            Additional Information:
-
-            Year: [Enter the model year]
-            Mileage: [Specify the mileage]
-            Condition: [Describe the overall condition – Excellent, Good, Fair, etc.]
-            Transmission: [Specify if it's automatic or manual]
-            Color: [Mention the exterior color]
-            Don't miss the opportunity to own this reliable and economical Mehran 800cc compact car. Bid now and embark on a journey of efficiency, style, and affordability!
+                {{ listing.description }}
         </div>
         <div class="listingBottomComments">
             <div class="listingBottomComments__comment">

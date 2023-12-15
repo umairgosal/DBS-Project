@@ -24,6 +24,17 @@ def my_custom_sql():
         cursor.execute('SELECT * FROM listing')
         columns = [col[0] for col in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+def get_listing(listingID):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM listing WHERE listing_id = {}".format(listingID))
+        columns = [col[0] for col in cursor.description]
+        row = cursor.fetchone()
+        if row:
+            return dict(zip(columns, row))
+        else:
+            return None  # Handle the case where no row is found
+
 
 # Create your views here.
 def register(request):
@@ -90,4 +101,8 @@ def create(request):
     return render(request, "biddingsystem/createListing.html")
 
 def listing(request, listing_id):
-    return render(request, "biddingsystem/listing.html")
+    listing = get_listing(listing_id)
+
+    return render(request, "biddingsystem/listing.html", {
+        "listing": listing
+    })
