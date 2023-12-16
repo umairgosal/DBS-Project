@@ -3,6 +3,9 @@ from django.db import connection, IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from json import loads
 # import pyrebase
 
 
@@ -38,6 +41,13 @@ def get_listing(listingID):
 def place_bid(listing_id, bidder, bid_amount):
     with connection.cursor() as cursor:
         cursor.callproc("place_bid", [listing_id, bid_amount, bidder])
+
+def get_categories():
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM category")
+        columns = [col[0] for col in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
 
 # Create your views here.
 def register(request):
@@ -101,7 +111,11 @@ def create(request):
             cursor.execute(query)
 
         return redirect(reverse(index))
-    return render(request, "biddingsystem/createListing.html")
+
+    categories = get_categories()
+    return render(request, "biddingsystem/createListing.html", {
+        "categories": categories
+    })
 
 def listing(request, listing_id):
     if request.method == "POST":
@@ -114,7 +128,8 @@ def listing(request, listing_id):
 
     return render(request, "biddingsystem/listing.html", {
         "listing": listing,
-        "bid_option": bool (request.user.username != listing["lister"])
+        "bid_option": bool (request.user.username != listing["lister"]),
+        "close_option": bool (request.user.username == listing["lister"])
     })
 
 
@@ -122,4 +137,38 @@ def profile(request):
     return render(request, "biddingsystem/profile.html", {
         "self_profile": True,
         "listings": get_all_listings()
+    })
+
+
+@csrf_exempt
+def follow(request):
+    if request.method != "POST":
+        return JsonResponse({"message": "Post request required"})
+    
+    data = loads(request.body)
+    follower = data.get('follower')
+    followed = data.get('followed')
+
+    #code to make an entry in the follow table
+
+    # if data.get('operation') == "follow":
+    #     try:
+    #         # code to make an entry in the follow table
+    #         pass
+    #     except IntegrityError:
+    #         return render(request, 'biddingsystem/profile.html', {
+    #             "message": "You already follow this user"
+    #         })
+        
+    # elif data.get('operation') == "unfollow":
+    #     try:
+    #         # code to delete an entry from the follow table
+    #         pass
+    #     except:
+    #         return render(request, 'biddingsystem/profile.html', {
+    #             "message": "You don't follow this user"
+    #         })
+        
+    return JsonResponse({
+        "message": "success"
     })

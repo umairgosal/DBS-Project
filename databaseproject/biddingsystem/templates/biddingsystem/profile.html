@@ -13,12 +13,16 @@
             <p class="profile__credentials_username">@saadashraf</p>
         </div>
         <div class="profile__follow">
-            <button onclick="followUser(this,e)">Follow</button>
+            {% if user_not_follows %}
+            <button id="follow_button" onclick="followUser(this,event)" data-followed="saadashraf" data-follower="hissan">Follow</button>
+            {% else %}
+            <button id="follow_button" onclick="unFollowUser(this,event)" data-followed="saadashraf" data-follower="hissan">Unfollow</button>
+            {% endif %}
         </div>
         <div class="profile__details">
             <div class="profile__details__followers">
                 <p class="followers__heading">Followers</p>
-                <p class="followers__count">50</p>
+                <p id="followers_count" class="followers__count">50</p>
             </div>
             <div class="profile__details__following">
                 <p class="following__heading">

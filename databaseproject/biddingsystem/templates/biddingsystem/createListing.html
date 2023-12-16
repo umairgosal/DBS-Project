@@ -36,13 +36,12 @@
                       <li><a class="dropdown-item" href="#">Automobile</a></li>
                       <li><a class="dropdown-item" href="#">Sports</a></li>
                     </ul> -->
-                    <label for="category: ">Category: </label>
+                    <label for="category">Category: </label>
 
                     <select name="category" id="categories">
-                        <option value="volvo">Volvo</option>
-                        <option value="saab">Saab</option>
-                        <option value="mercedes">Mercedes</option>
-                        <option value="audi">Audi</option>
+                        {% for category in categories %} 
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
                     </select>
                   </div>
             </div>
