@@ -31,3 +31,16 @@ async function unFollowUser(unFollowBtn, event) {
             unFollowBtn.setAttribute('onclick', 'followUser(this, event)')
         })
 }
+
+
+function cancelPayment(cancelBtn, event) {
+    event.preventDefault();
+    paymentBox = document.getElementById('payment')
+    paymentBox.style.display = 'none';
+}
+
+function pay(payBtn, event) {
+    event.preventDefault();
+    paymentBox = document.getElementById('payment')
+    paymentBox.style.display = 'block';
+}

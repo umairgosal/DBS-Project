@@ -1,10 +1,29 @@
 {% extends 'biddingsystem/layout.html' %} 
 
+{% load custom_filters %}
+
 {% block title %}
     Listing
 {% endblock %} 
 
 {% block body %}
+{% if message %} 
+    <script>
+        alert("{{ message }}")
+    </script>
+{% endif %}
+<div id="payment" class="paymentConfirmation">
+    <div id class="paymentConfirmation__message">
+        <p>Are you sure you want to pay @saadashraf Rs.50000 for this product ?</p>
+    </div>
+    <div class="paymentConfirmation__action">
+        <form action="{% url 'payment' listing.listing_id %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" name="payment" value="Pay from Wallet">
+        </form>
+        <button onclick="cancelPayment(this, event)">Cancel</button>
+    </div>
+</div>
 <div class="listing">
     <div class="listingTop">
         <div class="listingTopLeft">
@@ -22,27 +41,30 @@
                 <p class="listingTopRightDetails__category">{{ listing.category }}</p>
             </div>
             <p class="listingTopRightDetails__price">{{ listing.current_price }}</p>
-            {% if close_option %}
+            {% if user.username == listing.lister and not listing.is_closed %}
                 <form action="{% url 'listing' listing.listing_id %}" method="POST">
                     {% csrf_token %}
                     <input type="submit" value="Close Auction" name="close_auction">
                 </form>
             {% endif %}
-            {% if user.is_authenticated and not close_auction and not listing.is_closed %} 
+            {% if user.is_authenticated and user.username != listing.lister and not listing.is_closed  %} 
                 <form action="{% url 'listing' listing.listing_id %}" method="POST">
                     {% csrf_token %}
                     <input type="submit" value="Add to Watchlist" name="add_to_watchlist">
                 </form>
             {% endif %}
+            {% if user.username == listing.winner %}
+                <button onclick="pay(this, event)">Pay</button>
+            {% endif %}
         </div>
     </div>
     <div class="listingBottom">
-        {% if user.is_authenticated and bid_option %}
+        {% if user.is_authenticated and user.username != listing.lister and not listing.is_closed %}
             <div class="listingBottom__bid">
                 <form action="{% url 'listing' listing.listing_id %}" method="POST">
                     {% csrf_token %}
                     <label for="bidAmount">Enter your bid amount:</label>
-                    <input type="number" id="bidAmount" min="{{ listing.current_price }}" name="bidAmount" required>
+                    <input type="number" id="bidAmount" min="{{ listing.current_price|bidAmt }}" name="bidAmount" required>
                     <input type="submit" value="Make a Bid">
                 </form>
             </div>
@@ -54,15 +76,18 @@
             {% if user.is_authenticated %} 
                 <div class="listingBottomComments__addComment">
                     <form action="{% url 'listing' listing.listing_id %}" method="POST">
+                        {% csrf_token %}
                         <input class="comment__box" type="text" name="comment_text">
                         <input type="submit" name="comment" value="Comment">
                     </form>
                 </div>
             {% endif %}
+            {% for comment in comments %}
             <div class="listingBottomComments__comment">
-                <strong class="listingBottomComments__comment_username">Saad</strong>
-                <p class="listingBottomComments_comment_text">Good product</p>
+                <strong class="listingBottomComments__comment_username">{{ comment.commenter}}</strong>
+                <p class="listingBottomComments_comment_text">{{ comment.comment_text }}</p>
             </div>
+            {% endfor %}
         </div>
     </div>
 </div>

@@ -47,6 +47,16 @@ def get_categories():
         cursor.execute("SELECT * FROM category")
         columns = [col[0] for col in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+def make_comment(listing_id, commenter, comment):
+    with connection.cursor() as cursor:
+        cursor.callproc("make_comment", [listing_id, commenter, comment])
+
+def get_listing_comments(listing_id):
+    with connection.cursor() as cursor:
+        cursor.callproc("get_comments", [listing_id])
+        columns = [col[0] for col in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
 # Create your views here.
@@ -118,16 +128,44 @@ def create(request):
     })
 
 def listing(request, listing_id):
+    listing = get_listing(listing_id)
+    
     if request.method == "POST":
         if request.POST.get('bidAmount'):
             bid_amount = request.POST['bidAmount']
+            if request.user.username == listing["lister"]:
+                return render(request, "biddingsystem/listing.html", {
+                    "listing": listing,
+                    "message": "You can't place a bid on your own listing"
+                })
+            elif listing["is_closed"]:
+                return render(request, "biddingsystem/listing.html", {
+                    "listing": listing,
+                    "message": "This listing has already been closed"
+                })
             place_bid(listing_id, request.user.username, bid_amount)
+            return render(request, "biddingsystem/listing.html", {
+                "listing": listing,
+                "message": "Bid placed succesfully"
+            })
+        
+        if request.POST.get('comment'):
+            comment_text = request.POST.get('comment_text')
+            commenter = request.user.username
+            if listing["is_closed"]:
+                return render(request, "biddingsystem/listing.html", {
+                    "listing": listing,
+                    "message": "This listing has been closed"
+                }) 
+            make_comment(listing_id, commenter, comment_text)
 
 
-    listing = get_listing(listing_id)
+
+    comments = get_listing_comments(listing_id)
 
     return render(request, "biddingsystem/listing.html", {
         "listing": listing,
+        "comments": comments,
         "bid_option": bool (request.user.username != listing["lister"]),
         "close_option": bool (request.user.username == listing["lister"])
     })
@@ -171,4 +209,12 @@ def follow(request):
         
     return JsonResponse({
         "message": "success"
+    })
+
+
+def payment(request, listing_id):
+    if request.method == "POST":
+        pass
+    return render(request, "biddingsystem/payment.html", {
+        "listing": get_listing(listing_id)
     })
