@@ -1,0 +1,22 @@
+{% extends 'biddingsystem/layout.html' %}
+
+{% block title %} indiviual_chat {% endblock %} 
+
+{% block body %}
+    <h1>Chat with {{ selected_user.username }}</h1>
+    
+        <!-- Display chat messages -->
+        <div class="chat-messages">
+            {% for message in chat_messages %}
+                <p>{{ message.sender }}: {{ message.content }}</p>
+            {% endfor %}
+        </div>
+    
+        <!-- Form to send new messages -->
+        <form method="post" action="{% url 'send_message' %}">
+            {% csrf_token %}
+            <input type="text" name="message">
+            <input type="hidden" name="recipient_id" value="{{ selected_user.id }}">
+            <input type="submit" value="Send">
+        </form>
+{% endblock %}

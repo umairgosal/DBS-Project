@@ -1,0 +1,38 @@
+{% extends "biddingsystem/layout.html" %} 
+
+{% block title %} Register {% endblock %} 
+
+{% block body %}
+    {% if message %}
+        <script>
+            alert("{{message}}")
+        </script>
+    {% endif %}
+    <div class="register">
+        <h3>Register</h3>
+        <form action="{% url 'register' %}" method="POST">
+            {% csrf_token %}
+            <div class="register__firstName">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName">
+            </div>
+            <div class="register__lastName">
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName">
+            </div>
+            <div class="register_email">
+                <label for="email">Email:</label>
+                <input type="email" name="email">
+            </div>
+            <div class="register__username">
+                <label for="username">Username:</label>
+                <input type="text" name="username">
+            </div>
+            <div class="register__password">
+                <label for="password">Password:</label>
+                <input type="password" name="password">
+            </div>
+            <input type="submit" value="Register" id="register__button">
+        </form>
+    </div>
+{% endblock %}

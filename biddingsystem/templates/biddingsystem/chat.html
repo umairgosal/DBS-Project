@@ -1,0 +1,52 @@
+{% extends 'biddingsystem/layout.html' %}
+
+{% block title %} chat {% endblock %} 
+
+{% block body %}
+{% for user in users %}
+    <h3>{{ user.username }}</h3>
+    <div id="chat-container">
+        <div id="chat-messages">
+            {% for message in conversations.user %}
+                <p>{{ message.sender.username }}: {{ message.content }}</p>
+            {% endfor %}
+        </div>
+        <div id="chat-input">
+            <input type="text" class="message-input" placeholder="Type your message...">
+            <button class="send-button" data-recipient="{{ user.id }}">Send</button>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sendButtons = document.querySelectorAll('.send-button');
+        const messageInputs = document.querySelectorAll('.message-input');
+    
+        sendButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const recipientId = button.getAttribute('data-recipient');
+                const messageInput = button.parentElement.querySelector('.message-input');
+                const message = messageInput.value.trim();
+            
+                if (message !== '') {
+                    fetch('/send_message/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({ recipient_id: recipientId, message: message })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'ok') {
+                            // Handle successful message sending (maybe update UI)
+                        }
+                    });
+                }
+            });
+        });
+    });
+    </script>
+{% endblock %}

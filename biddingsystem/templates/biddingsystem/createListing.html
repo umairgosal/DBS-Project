@@ -1,0 +1,73 @@
+{% extends 'biddingsystem/layout.html' %} 
+
+{% block title %}
+    Create Listing
+{% endblock %} 
+
+{% block body %}
+    <h3 class="heading">Create Listing</h3>
+    <form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div id="createListing">
+            <div id="createListing__title">
+                <label for="title">Title:</label>
+                <input type="text" name="title">
+            </div>  
+            <div id="createListing__description">
+                <label for="description">Description:</label>
+                <input type="text" name="description">
+            </div>
+            <div id="createListing__image">
+                <label for="file">Upload an image:</label>
+                <input type="file" id="file" name="image" accept=".txt, .pdf, .docx, .jpg, .jpeg, .png" onchange="previewImage(this)">
+                <img id="imagePreview" src="#" alt="Preview" style="max-width: 100%; display: none;">
+            </div>
+            <div id="createListing__basePrice">
+                <label for="basePrice">Base Price:</label>
+                <input type="number" name="base_price">
+            </div>
+            <div id="createListing__category">
+                <div class="dropdown">
+                    <!-- <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Select a Category
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Home</a></li>
+                      <li><a class="dropdown-item" href="#">Automobile</a></li>
+                      <li><a class="dropdown-item" href="#">Sports</a></li>
+                    </ul> -->
+                    <label for="category">Category: </label>
+
+                    <select name="category" id="categories">
+                        {% for category in categories %} 
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+            </div>
+            <div id="createListing__submit">
+                <input type="submit" value="Create">
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function previewImage(input) {
+            var preview = document.getElementById('imagePreview');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}

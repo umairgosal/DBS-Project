@@ -1,0 +1,518 @@
+/* Reset some default styles */
+body, h1, h2, h3, p, label, input, form {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+}
+
+.heading {
+    margin: 10px;
+}
+
+#createListing {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#createListing h3 {
+    color: #333;
+}
+
+#createListing label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#createListing input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#createListing__category {
+    margin: 3px;
+}
+
+#createListing input[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#createListing input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Optional: Style the file input button */
+#createListing__ input[type="file"] {
+    display: none;
+}
+
+#createListing__ label[for="file"] {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+#createListing__ label[for="file"]:hover {
+    background-color: #45a049;
+}
+
+
+
+.listing {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    overflow: hidden;
+}
+
+.listingTop {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.listingTopLeft__image {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.listingTopRightDetails {
+    margin-bottom: 10px;
+}
+
+.listingTopRightDetails__title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
+}
+
+.listingTopRightDetails__category {
+    color: #555;
+    margin: 0;
+}
+
+.listingTopRightDetails__price {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #27ae60;
+    margin: 0;
+}
+
+.listingBottom {
+    padding: 20px;
+}
+
+.listingBottom__bid {
+    margin-bottom: 20px;
+}
+
+.listingBottom__bid form {
+    display: flex;
+    align-items: center;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    background-color: #3498db;
+    color: #fff;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.listingBottom__description {
+    line-height: 1.6;
+}
+
+.listingBottomComments {
+    margin-top: 20px;
+}
+
+.listingBottomComments__comment {
+    margin-bottom: 10px;
+}
+
+.listingBottomComments__comment_username {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.listingBottomComments_comment_text {
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .listingTop {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .listingTopLeft__image {
+        margin-bottom: 10px;
+    }
+
+    .listingTopRightDetails {
+        text-align: center;
+    }
+
+    .listingBottom__bid form {
+        flex-direction: column;
+    }
+}
+
+.register {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.register h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.register label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.register input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Styling for the Register button */
+#register__button {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#register__button:hover {
+    background-color: #45a049;
+}
+
+/* Optional: Style for better readability on small screens */
+@media (max-width: 600px) {
+    .register {
+        width: 90%;
+    }
+}
+
+/* CSS for the login page */
+.login {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.login label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Styling for the Login button */
+.login input[type="submit"] {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Optional: Style for better readability on small screens */
+@media (max-width: 600px) {
+    .login {
+        width: 90%;
+    }
+}
+
+
+/* Container styling */
+.active__listingsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  /* Listing styling */
+  .active__listing {
+    display: flex;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Left side (image) styling */
+  .active__listingLeft {
+    flex: 1;
+  }
+  
+  .active__listingImage {
+    width: 300px;
+    object-fit: contain;
+    border-right: 1px solid #ddd;
+  }
+  
+  /* Right side styling */
+  .active__listingRight {
+    flex: 0.4;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .active__listingRightTop {
+    margin-bottom: 10px;
+  }
+  
+  .active__listingRightTop h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .active__listingRightTop p {
+    color: #777;
+  }
+  
+  /* Price styling */
+  .active__listingRight p {
+    margin: 0;
+    color: #333;
+  }
+  
+/* Select styling */
+#categories {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: #fff;
+    color: #333;
+  }
+  
+  /* Remove default arrow icon in some browsers */
+  #categories::-ms-expand {
+    display: none;
+  }
+  
+  /* Custom arrow icon */
+  #categories {
+    appearance: none;
+    background-image: url('path-to-arrow-icon.png'); /* Add your custom arrow icon */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  
+  /* Hover and focus effects */
+  #categories:hover, #categories:focus {
+    border-color: #aaa;
+  }
+  
+  /* Active state */
+  #categories:active {
+    border-color: #555;
+  }
+
+
+/* Profile Container */
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Profile Credentials */
+  .profile__credentials {
+    flex-grow: 1;
+  }
+  
+  .profile__credentials_name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .profile__credentials_username {
+    color: #555;
+    margin: 5px 0;
+  }
+  
+  /* Follow Button */
+  .profile__follow button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 50px;
+  }
+  
+  /* Profile Details */
+  .profile__details {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Profile Details Sections */
+  .profile__details > div {
+    margin-right: 20px;
+  }
+  
+  /* Profile Details Headings */
+  .followers__heading,
+  .following__heading,
+  listings__heading {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  /* Profile Details Counts */
+  .followers__count,
+  .following__count,
+  listings__count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 5px 0;
+  }
+  
+
+  .wallet {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .wallet__details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wallet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Wallet Details */
+  .wallet__details {
+    flex-grow: 1;
+  }
+  
+  .wallet__credit_heading {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  .wallet__credit__amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 5px 0;
+  }
+  
+  /* Top Up Button */
+  .wallet button {
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Remove underlines from anchor tags within buttons */
+  .wallet button a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .comment__box {
+    width: 400px;
+  }
