@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from json import loads
 from .models import Message
 from django.contrib.auth.decorators import login_required
+import json
 # import pyrebase
 
 
@@ -176,51 +177,67 @@ def follow(request):
     })
 
 #defining a function to create a chat page
-@login_required
 def chat_view(request):
-    users = User.objects.exclude(id=request.user.id)  # Exclude the current user from the list
-    conversations = {}  # Dictionary to store conversations for each user
+    # This function excludes the currently logged in user (i-e us) from the chat list to avoid self-chat
+    users = User.objects.exclude(id=request.user.id)
     
+    # Fetch messages for each user in the loop
     for user in users:
-        conversation = Message.objects.filter(
-            (Q(sender=request.user) & Q(recipient=user)) | (Q(sender=user) & Q(recipient=request.user))
-        ).order_by('-timestamp')[:5]  # Fetch the last 5 messages for each user
+        # Fetch messages for the current user from the database
+        messages = Message.objects.filter(
+            (Q(sender=request.user) & Q(recipient=user)) |
+            (Q(sender=user) & Q(recipient=request.user))
+        ).order_by('timestamp')
         
-        conversations[user] = conversation
+        # Attach the messages to the user object for rendering
+        user.messages = messages
     
-    return render(request, 'biddingsystem/chat.html', {'users': users, 'conversations': conversations})
-
-@login_required
-def send_message(request):
-    if request.method == 'POST':
-        message_text = request.POST.get('message', '')
-        recipient_id = request.POST.get('recipient_id', None)
-        if message_text and recipient_id:
-            recipient = User.objects.get(id=recipient_id)
-            Message.objects.create(sender=request.user, recipient=recipient, content=message_text)
-    return redirect('chat_view')  # Redirect to the general chat page after sending the message
+    return render(request, 'biddingsystem/chat.html', {'users': users})
 
 @login_required
 def individual_chat_view(request, user_id):
     recipient = get_object_or_404(User, pk=user_id)
-    
+
     # Fetch chat messages between the logged-in user and the selected user
-    chat_messages = Message.objects.filter(sender=request.user, recipient=recipient) | \
-                    Message.objects.filter(sender=recipient, recipient=request.user)
+    messages = Message.objects.filter(
+        (Q(sender=request.user) & Q(recipient=recipient)) |
+        (Q(sender=recipient) & Q(recipient=request.user))
+    ).order_by('timestamp')
     
-    return render(request, 'biddingsystem/individual_chat.html', {'recipient': recipient, 'chat_messages': chat_messages})
+    return render(request, 'biddingsystem/individual_chat.html', {'recipient': recipient, 'chat_messages': messages})
+
 
 @csrf_exempt
 @login_required
 def send_message(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        recipient_id = data.get('recipient_id')
-        message_text = data.get('message')
+        try:
+            print("entered send_message function")
+            data = json.loads(request.body)
+            recipient_id = data.get('recipient_id')
+            message_text = data.get('message')
+            print(recipient_id)
+            print(message_text)
+            
+            # Validate recipient_id and message_text
+            if not (recipient_id and message_text):
+                return JsonResponse({'status': 'error', 'message': 'Recipient ID or message missing'})
 
-        if recipient_id and message_text:
-            recipient = User.objects.get(id=recipient_id)
+            print("control reached checking existing recipient")
+            # Check if the recipient exists
+            recipient = User.objects.filter(id=recipient_id).first()
+            if not recipient:
+                return JsonResponse({'status': 'error', 'message': 'Recipient does not exist'})
+
+            # Create a message
+            print("control reaches create message method")
             message = Message.objects.create(sender=request.user, recipient=recipient, content=message_text)
             return JsonResponse({'status': 'ok'})
-    
-    return JsonResponse({'status': 'error'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

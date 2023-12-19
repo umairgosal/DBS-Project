@@ -3,20 +3,47 @@
 {% block title %} indiviual_chat {% endblock %} 
 
 {% block body %}
-    <h1>Chat with {{ selected_user.username }}</h1>
-    
-        <!-- Display chat messages -->
-        <div class="chat-messages">
-            {% for message in chat_messages %}
-                <p>{{ message.sender }}: {{ message.content }}</p>
-            {% endfor %}
-        </div>
-    
-        <!-- Form to send new messages -->
-        <form method="post" action="{% url 'send_message' %}">
-            {% csrf_token %}
-            <input type="text" name="message">
-            <input type="hidden" name="recipient_id" value="{{ selected_user.id }}">
-            <input type="submit" value="Send">
-        </form>
+<div id="chat-window">
+    {% for message in chat_messages %}
+        <p>{% if message.sender == request.user %} You: {% else %} {{ message.sender }}: {% endif %} {{ message.content }}</p>
+    {% endfor %}
+</div>
+<div id="message-input">
+    <input type="text" id="message" placeholder="Type a message...">
+    <button id="send-button">Send</button>
+</div>
+
+<script>
+    const sendButton = document.getElementById('send-button');
+    const messageInput = document.getElementById('message');
+    const chatWindow = document.getElementById('chat-window');
+    const recipientId = '{{ recipient.id }}';
+
+
+    sendButton.addEventListener('click', () => {
+        const message = messageInput.value.trim();
+        if (message !== '' && recipientId) {
+            fetch('/send_message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ recipient_id: recipientId, message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // If message sent successfully, update chat window
+                    chatWindow.innerHTML += `<p>You: ${message}</p>`;
+                    messageInput.value = '';  // Clear message input after sending
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error if message sending fails
+            });
+        }
+    });
+</script>
 {% endblock %}
