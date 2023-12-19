@@ -24,11 +24,6 @@
 
 
 {% block body %}
-
-{% if user.is_authenticated %}
-  logged in 
-{% endif %}
-
 <div class="active__listingsContainer">
   {% for listing in listings %}
     <div class="active__listing">
@@ -46,5 +41,4 @@
     </div>
     {% endfor %}
   </div>
-
 {% endblock %}

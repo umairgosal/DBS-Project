@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads
+from django.conf import settings
+import stripe
 # import pyrebase
 
 
@@ -21,6 +23,7 @@ from json import loads
 
 # firebase = pyrebase.initialize_app(firebaseConfig)
 # storage = firebase.storage()
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def get_all_listings():
     with connection.cursor() as cursor:
@@ -126,6 +129,52 @@ def remove_from_watchlist(username, listing_id):
     with connection.cursor() as cursor:
         cursor.callproc("remove_from_watchlist", [username, listing_id])
 
+def add_to_wallet(username, amount):
+    with connection.cursor() as cursor:
+        cursor.callproc("wallet_add_amount", [username, amount])
+
+def get_wallet_amount(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("wallet_amount", [username])
+        return cursor.fetchone()[0]
+    
+
+def check_follow(follower, followed):
+    with connection.cursor() as cursor:
+        cursor.callproc("check_follow", [follower, followed])
+        return cursor.fetchone()[0]
+    
+def follow_user(follower, followed):
+    with connection.cursor() as cursor:
+        cursor.callproc("follow", [follower, followed])
+
+def unfollow_user(follower, followed):
+    with connection.cursor() as cursor:
+        cursor.callproc("unfollow", [follower, followed])
+
+def get_followers(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("user_followers", [username])
+        return cursor.fetchone()[0]
+
+def get_following(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("user_following", [username])
+        return cursor.fetchone()[0]
+    
+def get_no_of_listings(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("user_listing", [username])
+        return cursor.fetchone()[0]
+    
+
+def get_following_listings(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("followed_user_posts", [username])
+        columns = [col[0] for col in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+
 # Create your views here.
 def register(request):
     if request.method == "POST":
@@ -172,7 +221,8 @@ def log_out(request):
 def index(request):
     listings = get_all_listings()
     return render(request, "biddingsystem/index.html", {
-        "listings": listings
+        "listings": listings,
+        "key": settings.STRIPE_PUBLISHABLE_KEY
     })
 
 def create(request):
@@ -263,15 +313,25 @@ def listing(request, listing_id):
 
 def profile(request, username):
     profile = get_user(username)
+    wallet_credit = get_wallet_amount(username)
+    follow = check_follow(request.user.username, username)
+    followers = get_followers(username)
+    following = get_following(username)
+    no_of_listings = get_no_of_listings(username)
     return render(request, "biddingsystem/profile.html", {
         "profile": profile,
         "self_profile": bool (request.user.username == profile.get("username")),
-        "listings": get_user_listings(username)
+        "listings": get_user_listings(username),
+        "wallet_credit": wallet_credit,
+        "follow": follow,
+        "followers": followers,
+        "following": following,
+        "no_of_listings": no_of_listings
     })
 
 
 @csrf_exempt
-def follow(request):
+def follow(request, username):
     if request.method != "POST":
         return HttpResponse({"message": "Post request required"})
     
@@ -281,26 +341,32 @@ def follow(request):
 
     #code to make an entry in the follow table
 
-    # if data.get('operation') == "follow":
-    #     try:
-    #         # code to make an entry in the follow table
-    #         pass
-    #     except IntegrityError:
-    #         return render(request, 'biddingsystem/profile.html', {
-    #             "message": "You already follow this user"
-    #         })
+    if data.get('operation') == "follow":
+        try:
+            follow_user(follower, followed)
+            pass
+        except IntegrityError:
+            return render(request, 'biddingsystem/profile.html', {
+                "message": "You already follow this user"
+            })
         
-    # elif data.get('operation') == "unfollow":
-    #     try:
-    #         # code to delete an entry from the follow table
-    #         pass
-    #     except:
-    #         return render(request, 'biddingsystem/profile.html', {
-    #             "message": "You don't follow this user"
-    #         })
+    elif data.get('operation') == "unfollow":
+        try:
+            unfollow_user(follower, followed)
+            pass
+        except:
+            return render(request, 'biddingsystem/profile.html', {
+                "message": "You don't follow this user"
+            })
         
     return JsonResponse({
         "message": "success"
+    })
+
+def following(request):
+    listings = get_following_listings(request.user.username)
+    return render(request, "biddingsystem/index.html", {
+        "listings": listings
     })
 
 
@@ -315,4 +381,25 @@ def payment(request, listing_id):
         pass
     return render(request, "biddingsystem/payment.html", {
         "listing": get_watchlist_listings(listing_id)
+    })
+
+
+def topup(request):
+    if request.method == "POST":
+        if request.POST.get('topup'):
+            topup_amount = str(request.POST['topup_amount'])
+            return render(request, "biddingsystem/topup.html", {
+                "key": settings.STRIPE_PUBLISHABLE_KEY,
+                "amount": topup_amount
+            })
+        
+        amount = request.POST["topup_payment"]
+
+        add_to_wallet(request.user.username, amount)
+        
+        return redirect(reverse(profile, kwargs = {
+            "username": request.user.username
+        }))
+    return render(request, "biddingsystem/topup.html", {
+        "key": settings.STRIPE_PUBLISHABLE_KEY
     })

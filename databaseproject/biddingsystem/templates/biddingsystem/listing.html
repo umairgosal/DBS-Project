@@ -32,7 +32,7 @@
             </div>
             <div class="listingTopLeft__lister">
                 <p class="lister__heading">Listed by</p>
-                <p class="lister__username">{{ listing.lister }}</p>
+                <p class="lister__username"><a href="{% url 'profile' listing.lister %}">{{ listing.lister }}</a></p>
             </div>
         </div>
         <div class="listingTopRight">

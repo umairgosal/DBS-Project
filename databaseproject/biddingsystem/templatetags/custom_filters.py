@@ -7,5 +7,5 @@ def min_bid(price):
     return (price + (price * 0.05))
 
 @register.filter
-def user_not_follows():
-    return True
+def calc_topup_amt(amount):
+    return int(amount) * 100

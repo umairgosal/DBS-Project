@@ -1,36 +1,47 @@
-async function followUser (followBtn, event) {
+function followUser(followBtn, event) {
     event.preventDefault();
-    await fetch("follow", {
+    fetch("/profile/" + followBtn.dataset.followed + "/follow", {
         method: "POST",
         body: JSON.stringify({
             operation: "follow",
-            followed: followBtn.dataset.followed,
-            follower: followBtn.dataset.follower
-        })}).then(response => response.json()).then(result => {
-            console.log(result)
-            const followersCount = document.getElementById('followers_count')
-            followersCount.textContent = Number(followersCount.textContent) + 1
-            followBtn.textContent = "Unfollow"
-            followBtn.setAttribute('onclick', 'unFollowUser(this, event)')
-        })
-}   
+            follower: followBtn.dataset.follower,
+            followed: followBtn.dataset.followed
+        }),
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+        const followersCount = document.getElementById('followers_count');
+        followersCount.textContent = Number(followersCount.textContent) + 1;
+        followBtn.textContent = "Unfollow";
+        followBtn.setAttribute('onclick', 'unFollowUser(this, event)');
+    })
+    .catch(error => console.error('Error:', error));
+}
 
-async function unFollowUser(unFollowBtn, event) {
+function unFollowUser(unFollowBtn, event) {
     event.preventDefault();
-    await fetch("follow", {
+    fetch("/profile/" + unFollowBtn.dataset.followed + "/follow", {
         method: "POST",
         body: JSON.stringify({
             operation: "unfollow",
-            followed: unFollowBtn.dataset.followed,
-            follower: unFollowBtn.dataset.follower
-        })}).then(response => response.json()).then(result => {
-            console.log(result)
-            const followersCount = document.getElementById('followers_count')
-            followersCount.textContent = Number(followersCount.textContent) - 1
-            unFollowBtn.textContent = "Follow"
-            unFollowBtn.setAttribute('onclick', 'followUser(this, event)')
-        })
+            follower: unFollowBtn.dataset.follower,
+            followed: unFollowBtn.dataset.followed
+        }),
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+        const followersCount = document.getElementById('followers_count');
+        followersCount.textContent = Number(followersCount.textContent) - 1;
+        unFollowBtn.textContent = "Follow";
+        unFollowBtn.setAttribute('onclick', 'followUser(this, event)');
+    })
+    .catch(error => console.error('Error:', error));
 }
+
 
 
 function cancelPayment(cancelBtn, event) {
@@ -43,4 +54,12 @@ function pay(payBtn, event) {
     event.preventDefault();
     paymentBox = document.getElementById('payment')
     paymentBox.style.display = 'block';
+}
+
+function updateStripeAmount() {
+    var amountInput = document.getElementById("amount").value;
+    var stripeButton = document.getElementById("stripeButton");
+
+    // Update the data-amount attribute with the user-input amount
+    stripeButton.setAttribute("data-amount", "900");
 }
