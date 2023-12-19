@@ -1,5 +1,7 @@
 {% extends "biddingsystem/layout.html" %} 
 
+{% load custom_filters %}
+
 {% block title %} 
     {{ name }}
 {% endblock %} 
@@ -13,6 +15,9 @@
             <p class="profile__credentials_username">@saadashraf</p>
         </div>
         <div class="profile__follow">
+            <script>
+                sendAlert();
+            </script>
             {% if user_not_follows %}
             <button id="follow_button" onclick="followUser(this,event)" data-followed="saadashraf" data-follower="hissan">Follow</button>
             {% else %}

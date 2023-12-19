@@ -8,7 +8,7 @@ urlpatterns = [
     path("login", views.log_in, name="login"),
     path("register", views.register, name="register"),
     path("logout", views.log_out, name="logout"),
-    path("profile", views.profile, name="profile"),
+    path("profile/<str:username>", views.profile, name="profile"),
     path("payment/<str:listing_id>", views.payment, name="payment"),
 
     #API routes

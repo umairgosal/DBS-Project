@@ -8,7 +8,7 @@ async function followUser (followBtn, event) {
             follower: followBtn.dataset.follower
         })}).then(response => response.json()).then(result => {
             console.log(result)
-            followersCount = document.getElementById('followers_count')
+            const followersCount = document.getElementById('followers_count')
             followersCount.textContent = Number(followersCount.textContent) + 1
             followBtn.textContent = "Unfollow"
             followBtn.setAttribute('onclick', 'unFollowUser(this, event)')
@@ -25,7 +25,7 @@ async function unFollowUser(unFollowBtn, event) {
             follower: unFollowBtn.dataset.follower
         })}).then(response => response.json()).then(result => {
             console.log(result)
-            followersCount = document.getElementById('followers_count')
+            const followersCount = document.getElementById('followers_count')
             followersCount.textContent = Number(followersCount.textContent) - 1
             unFollowBtn.textContent = "Follow"
             unFollowBtn.setAttribute('onclick', 'followUser(this, event)')

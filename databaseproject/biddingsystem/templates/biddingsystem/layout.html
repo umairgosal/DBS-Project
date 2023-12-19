@@ -33,7 +33,7 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'create' %}">{{ user.first_name }}</a>
+                            <a class="nav-link" href="{% url 'profile' user.username %}">{{ user.first_name }}</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'create' %}">Create Listing</a>

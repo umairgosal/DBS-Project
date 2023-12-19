@@ -3,7 +3,7 @@ from django.db import connection, IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads
 # import pyrebase
@@ -57,7 +57,38 @@ def get_listing_comments(listing_id):
         cursor.callproc("get_comments", [listing_id])
         columns = [col[0] for col in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
 
+def get_user(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("get_user", [username])
+        columns = [col[0] for col in cursor.description]
+        row = cursor.fetchone()  
+        if row:
+            return dict(zip(columns, row))
+
+
+    
+
+def get_user_listings(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("user_listing", [username])
+        columns = [col[0] for col in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+
+def close_auction(listing_id):
+    with connection.cursor() as cursor:
+        cursor.callproc("close_auction", [listing_id])
+
+def return_listing_page_with_message(request, listing_id, message):
+    listing = get_listing(listing_id)
+    comments = get_listing_comments(listing_id)
+    return render(request, 'biddingsystem/layout.html', {
+        "listing": listing,
+        "comments": comments,
+        "message": message
+    })
 
 # Create your views here.
 def register(request):
@@ -127,39 +158,38 @@ def create(request):
         "categories": categories
     })
 
-def listing(request, listing_id):
+def listing(request, listing_id):   
     listing = get_listing(listing_id)
-    
+    comments = get_listing_comments(listing_id) 
     if request.method == "POST":
         if request.POST.get('bidAmount'):
             bid_amount = request.POST['bidAmount']
             if request.user.username == listing["lister"]:
-                return render(request, "biddingsystem/listing.html", {
-                    "listing": listing,
-                    "message": "You can't place a bid on your own listing"
-                })
+                return_listing_page_with_message(request, listing_id, "You can't place a bid on your own listing")
             elif listing["is_closed"]:
-                return render(request, "biddingsystem/listing.html", {
-                    "listing": listing,
-                    "message": "This listing has already been closed"
-                })
+                return_listing_page_with_message(request, listing_id, "This listing has been closed")
             place_bid(listing_id, request.user.username, bid_amount)
-            return render(request, "biddingsystem/listing.html", {
-                "listing": listing,
-                "message": "Bid placed succesfully"
-            })
+            return_listing_page_with_message(request, listing_id, "Bid placed successfully")
+
         
         if request.POST.get('comment'):
             comment_text = request.POST.get('comment_text')
             commenter = request.user.username
             if listing["is_closed"]:
-                return render(request, "biddingsystem/listing.html", {
-                    "listing": listing,
-                    "message": "This listing has been closed"
-                }) 
+                return_listing_page_with_message(request, listing_id, "This listing has been closed")
+
             make_comment(listing_id, commenter, comment_text)
 
 
+        if request.POST.get('close_auction'):
+            if request.user.username != listing["lister"]:
+                return_listing_page_with_message(request, listing_id, "Only the owner of the listing can close the auction")
+ 
+            close_auction(listing_id)
+            return_listing_page_with_message(request, listing_id, "Successfully closed the listing")
+
+
+    listing = get_listing(listing_id)
 
     comments = get_listing_comments(listing_id)
 
@@ -171,17 +201,19 @@ def listing(request, listing_id):
     })
 
 
-def profile(request):
+def profile(request, username):
+    profile = get_user(username)
     return render(request, "biddingsystem/profile.html", {
-        "self_profile": True,
-        "listings": get_all_listings()
+        "profile": profile,
+        "self_profile": bool (request.user.username == profile.get("username")),
+        "listings": get_user_listings(username)
     })
 
 
 @csrf_exempt
 def follow(request):
     if request.method != "POST":
-        return JsonResponse({"message": "Post request required"})
+        return HttpResponse({"message": "Post request required"})
     
     data = loads(request.body)
     follower = data.get('follower')
