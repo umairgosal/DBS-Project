@@ -10,6 +10,7 @@ urlpatterns = [
     path("logout", views.log_out, name="logout"),
     path("profile/<str:username>", views.profile, name="profile"),
     path("payment/<str:listing_id>", views.payment, name="payment"),
+    path("watchlist", views.watchlist, name="watchlist"),
 
     #API routes
     path("follow", views.follow, name="follow")

@@ -90,6 +90,42 @@ def return_listing_page_with_message(request, listing_id, message):
         "message": message
     })
 
+def sufficient_balance(username, amount):
+    with connection.cursor() as cursor:
+        cursor.callproc("sufficient_balance", [username, amount])
+        return cursor.fetchone()[0]
+    
+def make_payment(listing_id, payer, payee, amount):
+    with connection.cursor() as cursor:
+        cursor.callproc("make_payment", [listing_id, payer, payee, amount])
+
+    
+def get_watchlist_listings(username):
+    with connection.cursor() as cursor:
+        cursor.callproc("watchlist_page", [username])
+        columns = [col[0] for col in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+
+def add_to_watchlist(username, listing_id):
+    with connection.cursor() as cursor:
+        cursor.callproc("add_to_watchlist", [username, listing_id])
+
+def get_category(categoryID):
+    with connection.cursor() as cursor:
+        cursor.callproc("return_category", [categoryID])
+        return cursor.fetchone()[0]
+    
+def listing_in_watchlist(username, listing_id):
+    with connection.cursor() as cursor:
+        cursor.callproc("check_watchlist", [username, listing_id])
+        return cursor.fetchone()[0]
+
+
+def remove_from_watchlist(username, listing_id):
+    with connection.cursor() as cursor:
+        cursor.callproc("remove_from_watchlist", [username, listing_id])
+
 # Create your views here.
 def register(request):
     if request.method == "POST":
@@ -188,16 +224,40 @@ def listing(request, listing_id):
             close_auction(listing_id)
             return_listing_page_with_message(request, listing_id, "Successfully closed the listing")
 
+        if request.POST.get('payment'):
+            if request.user.username == listing["winner"]:
+                payer = request.user.username
+                payee = listing["lister"]
+                amount = listing["current_price"]
+                if not sufficient_balance(request.user.username, amount):
+                    return return_listing_page_with_message(request, listing_id, "You dont have enough amount to pay for this product")
+                make_payment(listing_id, payer, payee, amount)
+
+        if request.POST.get('add_to_watchlist'):
+            add_to_watchlist(request.user.username, listing_id)
+
+        if request.POST.get('remove_from_watchlist'):
+            remove_from_watchlist(request.user.username, listing_id)
+
+
+
+
 
     listing = get_listing(listing_id)
 
     comments = get_listing_comments(listing_id)
 
+    category = get_category(listing["category"])
+
+    add_to_watchlist_button = not listing_in_watchlist(request.user.username, listing_id)
+
     return render(request, "biddingsystem/listing.html", {
         "listing": listing,
         "comments": comments,
+        "category": category,
         "bid_option": bool (request.user.username != listing["lister"]),
-        "close_option": bool (request.user.username == listing["lister"])
+        "close_option": bool (request.user.username == listing["lister"]),
+        "add_to_watchlist_button": add_to_watchlist_button
     })
 
 
@@ -244,9 +304,15 @@ def follow(request):
     })
 
 
+def watchlist(request):
+    listings = get_watchlist_listings(request.user.username)
+    return render(request, "biddingsystem/index.html", {
+        "listings": listings
+    })
+
 def payment(request, listing_id):
     if request.method == "POST":
         pass
     return render(request, "biddingsystem/payment.html", {
-        "listing": get_listing(listing_id)
+        "listing": get_watchlist_listings(listing_id)
     })
