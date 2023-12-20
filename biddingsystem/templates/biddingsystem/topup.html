@@ -1,0 +1,19 @@
+{% extends "biddingsystem/layout.html" %}
+
+{% load filters %}
+
+{% block title %} Top Up {% endblock %}
+
+{% block body %}
+<form id="topupForm" action="{% url 'topup' %}" method="POST">
+    {% csrf_token %}
+    <div class="topupForm">
+        <h3>
+            Topup Amount : {{ amount }}
+        </h3>
+        <input type="hidden" name="topup_payment" value="{{ amount }}">
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="{{ key }}"
+        data-description="Payment Gateway" data-currency="pkr" data-locale="auto" id="stripeButton" data-amount="{{ amount|calc_topup_amt }}"></script>
+    </div>
+</form>
+{% endblock %}
