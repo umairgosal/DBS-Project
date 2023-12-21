@@ -187,7 +187,11 @@ def get_following(username):
 def get_no_of_listings(username):
     with connection.cursor() as cursor:
         cursor.callproc("user_listing", [username])
-        return cursor.fetchone()[0]
+        listing = cursor.fetchone()
+        if listing:
+            return listing[0]
+        else:
+            return None
     
 
 def get_following_listings(username):

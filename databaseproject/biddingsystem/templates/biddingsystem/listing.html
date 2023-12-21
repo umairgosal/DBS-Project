@@ -51,6 +51,10 @@
                   <span class="sr-only">Next</span>
                 </a>
               </div>
+              <div class="listingTopLeft__lister">
+                <p>Listed by</p>
+                <p><a href="{% url 'profile' listing.lister %}">{{ listing.lister }}</a></p>
+              </div>
         </div>
         <div class="listingTopRight">
             <div class="listingTopRightDetails">
