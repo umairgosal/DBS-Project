@@ -39,7 +39,7 @@
           <h3>{{ listing.title }}</h3>
           <p>{{ listing.description }}</p>
         </div>
-        <p>{{ listing.current_price }}</p>
+        <p>Rs. {{ listing.current_price }}</p>
         <a href="{% url 'listing' listing.listing_id %}">View Listing</a>
       </div>
     </div>

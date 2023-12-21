@@ -61,7 +61,7 @@
                 <p class="listingTopRightDetails__title">{{ listing.title }}</p>
                 <p class="listingTopRightDetails__category">{{ category }}</p>
             </div>
-            <p class="listingTopRightDetails__price">{{ listing.current_price }}</p>
+            <p class="listingTopRightDetails__price">Rs. {{ listing.current_price }}</p>
             {% if user.username == listing.lister and not listing.is_closed %}
                 <form action="{% url 'listing' listing.listing_id %}" method="POST">
                     {% csrf_token %}

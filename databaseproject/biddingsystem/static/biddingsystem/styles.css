@@ -736,3 +736,23 @@ input[type="submit"] {
   display: flex;
   flex-direction: column;
 }
+
+.active__listingRight a {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  width: 150px;
+}
+
+.active__listingRight a:hover {
+  background-color: #2980b9;
+}
+
+.active__listingLeft img {
+  width: 200px;
+  object-fit: contain;
+}
