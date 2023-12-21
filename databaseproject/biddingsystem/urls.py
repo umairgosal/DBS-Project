@@ -13,6 +13,9 @@ urlpatterns = [
     path("watchlist", views.watchlist, name="watchlist"),
     path("topup", views.topup, name="topup"),
     path("following", views.following, name="following"),
+    path('chat/', views.chat_view, name='chat_view'),
+    path('individual_chat/<int:user_id>/', views.individual_chat_view, name='individual_chat_view'),
+    path('send_message/', views.send_message, name='send_message'),
 
     #API routes
     path("profile/<str:username>/follow", views.follow, name="follow")

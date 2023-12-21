@@ -1,0 +1,53 @@
+{% extends 'biddingsystem/layout.html' %}
+{% block title %} Chat {% endblock %} 
+{% block body %}
+
+{% comment %} these following lines show the users name and a link that leads to individual_chat_view {% endcomment %}
+<ul class="chat-users">
+    {% for user in users %}
+    <li>
+        {{ user.username }}
+        <a href="{% url 'individual_chat_view' user.id %}">Chat</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% comment %} <script>
+document.addEventListener('DOMContentLoaded', function() {
+const sendButtons = document.querySelectorAll('.send-button');
+const messageInputs = document.querySelectorAll('.message-input');
+
+sendButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const recipientId = button.getAttribute('data-recipient');
+        const messageInput = button.parentElement.querySelector('.message-input');
+        const message = messageInput.value.trim();
+
+        if (message !== '') {
+            fetch('/send_message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ recipient_id: recipientId, message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    // If message sent successfully, update chat window
+                    const chatMessages = button.parentElement.previousElementSibling;
+                    chatMessages.innerHTML += `<p>You: ${message}</p>`;
+                    messageInput.value = '';  // Clear message input after sending
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error if message sending fails
+        }
+    });
+});
+});
+</script> {% endcomment %}
+
+{% endblock %}

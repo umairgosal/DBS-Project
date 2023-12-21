@@ -1,11 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import connection, IntegrityError
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from json import loads
+from .models import Message
+from django.contrib.auth.decorators import login_required
+import json
 from django.conf import settings
 import stripe
 import os
@@ -502,3 +506,69 @@ def topup(request):
     return render(request, "biddingsystem/topup.html", {
         "key": settings.STRIPE_PUBLISHABLE_KEY
     })
+
+#defining a function to create a chat page
+def chat_view(request):
+    # This function excludes the currently logged in user (i-e us) from the chat list to avoid self-chat
+    users = User.objects.exclude(id=request.user.id)
+    
+    # Fetch messages for each user in the loop
+    for user in users:
+        # Fetch messages for the current user from the database
+        messages = Message.objects.filter(
+            (Q(sender=request.user) & Q(recipient=user)) |
+            (Q(sender=user) & Q(recipient=request.user))
+        ).order_by('timestamp')
+        
+        # Attach the messages to the user object for rendering
+        user.messages = messages
+    
+    return render(request, 'biddingsystem/chat.html', {'users': users})
+
+@login_required
+def individual_chat_view(request, user_id):
+    recipient = get_object_or_404(User, pk=user_id)
+
+    # Fetch chat messages between the logged-in user and the selected user
+    messages = Message.objects.filter(
+        (Q(sender=request.user) & Q(recipient=recipient)) |
+        (Q(sender=recipient) & Q(recipient=request.user))
+    ).order_by('timestamp')
+    
+    return render(request, 'biddingsystem/individual_chat.html', {'recipient': recipient, 'chat_messages': messages})
+
+
+@csrf_exempt
+@login_required
+def send_message(request):
+    if request.method == 'POST':
+        try:
+            print("entered send_message function")
+            data = json.loads(request.body)
+            recipient_id = data.get('recipient_id')
+            message_text = data.get('message')
+            print(recipient_id)
+            print(message_text)
+            
+            # Validate recipient_id and message_text
+            if not (recipient_id and message_text):
+                return JsonResponse({'status': 'error', 'message': 'Recipient ID or message missing'})
+
+            print("control reached checking existing recipient")
+            # Check if the recipient exists
+            recipient = User.objects.filter(id=recipient_id).first()
+            if not recipient:
+                return JsonResponse({'status': 'error', 'message': 'Recipient does not exist'})
+
+            # Create a message
+            print("control reaches create message method")
+            message = Message.objects.create(sender=request.user, recipient=recipient, content=message_text)
+            return JsonResponse({'status': 'ok'})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
+
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
