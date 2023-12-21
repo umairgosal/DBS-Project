@@ -35,9 +35,9 @@
             <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     {% for image in images %}
-                        <div class="carousel-item active">
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
                             {% with image.image_url as image_static %}
-                            <img src="{% static image_static %}" class="d-block w-50" alt="...">
+                                <img src="{% static image_static %}" class="d-block w-80" alt="...">
                             {% endwith %}
                         </div>
                     {% endfor %}
