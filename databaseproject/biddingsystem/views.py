@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from json import loads
 from django.conf import settings
 import stripe
+import os
 # import pyrebase
 
 
@@ -29,7 +30,14 @@ def get_all_listings():
     with connection.cursor() as cursor:
         cursor.execute('SELECT * FROM listing')
         columns = [col[0] for col in cursor.description]
-        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        listings = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        for listing in listings:
+            images = get_listing_images(listing["listing_id"])
+            if len(images) >= 1:
+                image = images[0]
+                listing["image_url"] = image["image_url"]
+        return listings
+            
     
 def get_listing(listingID):
     with connection.cursor() as cursor:
@@ -77,7 +85,14 @@ def get_user_listings(username):
     with connection.cursor() as cursor:
         cursor.callproc("user_listing", [username])
         columns = [col[0] for col in cursor.description]
-        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        listings = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        cursor.close()
+        for listing in listings:
+            images = get_listing_images(listing["listing_id"])
+            if len(images) >= 1:
+                image = images[0]
+                listing["image_url"] = image["image_url"]
+        return listings
     
 
 def close_auction(listing_id):
@@ -107,7 +122,14 @@ def get_watchlist_listings(username):
     with connection.cursor() as cursor:
         cursor.callproc("watchlist_page", [username])
         columns = [col[0] for col in cursor.description]
-        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        listings = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        cursor.close()
+        for listing in listings:
+            images = get_listing_images(listing["listing_id"])
+            if len(images) >= 1:
+                image = images[0]
+                listing["image_url"] = image["image_url"]
+        return listings
 
 
 def add_to_watchlist(username, listing_id):
@@ -172,7 +194,74 @@ def get_following_listings(username):
     with connection.cursor() as cursor:
         cursor.callproc("followed_user_posts", [username])
         columns = [col[0] for col in cursor.description]
+        listings = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        cursor.close()
+        for listing in listings:
+            images = get_listing_images(listing["listing_id"])
+            if len(images) >= 1:
+                image = images[0]
+                listing["image_url"] = image["image_url"]
+        return listings
+
+
+# def upload_images(files, listing_id):
+#     print("entered upload")
+
+#     folder = "./biddingsystem/static/biddingsystem/images"
+#     if not os.path.isdir(folder):
+#         os.mkdir(folder)
+
+#     print("Ok")
+#     filenames = []
+#     for i, file in enumerate(files):
+#         print("Let's see")
+#         # Save the file to a specific folder (images) with a specific filename
+#         filename = f"{listing_id}_{file.name}"
+#         filepath = os.path.join(folder, filename)
+#         filenames.append(filepath)
+#         print(folder)
+
+#         with open(filepath, 'wb') as destination:
+#             for chunk in file.chunks():
+#                 destination.write(chunk)
+#     for file in filenames:
+#         with connection.cursor() as cursor:
+#             print("working")
+#             cursor.callproc("add_images",[listing_id, file])
+
+
+def upload_images(files, listing_id):
+    print("entered upload")
+
+    folder = "./biddingsystem/static/biddingsystem/images/"
+    if not os.path.isdir(folder):
+        os.makedirs(folder)
+
+    print("Ok")
+    filenames = []
+    for i, file in enumerate(files):
+        print("Let's see")
+        # Save the file to a specific folder (images) with a specific filename
+        filename = f"{listing_id}_{file.name}"
+        filepath = os.path.join(folder, filename)
+        filenames.append(filepath)
+        print(folder)
+
+        with open(filepath, 'wb') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+    for file in filenames:
+        with connection.cursor() as cursor:
+            print("working")
+            cursor.callproc("add_images", [listing_id, file])
+
+
+def get_listing_images(listing_id):
+    with connection.cursor() as cursor:
+        cursor.callproc("get_image", [listing_id])
+        columns = [col[0] for col in cursor.description]
         return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
     
 
 # Create your views here.
@@ -221,8 +310,7 @@ def log_out(request):
 def index(request):
     listings = get_all_listings()
     return render(request, "biddingsystem/index.html", {
-        "listings": listings,
-        "key": settings.STRIPE_PUBLISHABLE_KEY
+        "listings": listings
     })
 
 def create(request):
@@ -231,11 +319,15 @@ def create(request):
         description = request.POST["description"]
         base_price = request.POST["base_price"]
         category = request.POST["category"]
-        image = request.POST["image"]
+        files = request.FILES.getlist('image')
 
         query = "INSERT INTO listing (lister, title, description, base_price, current_price, category, time_created) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', NOW())".format(request.user.username, title, description, base_price, base_price, category)
         with connection.cursor() as cursor:
-            cursor.execute(query)
+            cursor.callproc("create_listing", [request.user.username, title, description, base_price, category])
+            listing_id = cursor.fetchone()[0]
+
+        if listing_id is not None:
+            upload_images(files, listing_id)
 
         return redirect(reverse(index))
 
@@ -246,7 +338,7 @@ def create(request):
 
 def listing(request, listing_id):   
     listing = get_listing(listing_id)
-    comments = get_listing_comments(listing_id) 
+    comments = get_listing_comments(listing_id)
     if request.method == "POST":
         if request.POST.get('bidAmount'):
             bid_amount = request.POST['bidAmount']
@@ -301,13 +393,16 @@ def listing(request, listing_id):
 
     add_to_watchlist_button = not listing_in_watchlist(request.user.username, listing_id)
 
+    images = get_listing_images(listing_id)
+
     return render(request, "biddingsystem/listing.html", {
         "listing": listing,
         "comments": comments,
         "category": category,
         "bid_option": bool (request.user.username != listing["lister"]),
         "close_option": bool (request.user.username == listing["lister"]),
-        "add_to_watchlist_button": add_to_watchlist_button
+        "add_to_watchlist_button": add_to_watchlist_button,
+        "images": images
     })
 
 

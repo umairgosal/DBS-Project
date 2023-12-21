@@ -19,7 +19,7 @@
             </div>
             <div id="createListing__image">
                 <label for="file">Upload an image:</label>
-                <input type="file" id="file" name="image" accept=".txt, .pdf, .docx, .jpg, .jpeg, .png" onchange="previewImage(this)">
+                <input type="file" id="file" name="image" accept=".txt, .pdf, .docx, .jpg, .jpeg, .png" onchange="previewImage(this)" multiple>
                 <img id="imagePreview" src="#" alt="Preview" style="max-width: 100%; display: none;">
             </div>
             <div id="createListing__basePrice">
@@ -52,22 +52,27 @@
     </form>
 
     <script>
-        function previewImage(input) {
-            var preview = document.getElementById('imagePreview');
-            var file = input.files[0];
-            var reader = new FileReader();
-
-            reader.onloadend = function () {
-                preview.src = reader.result;
-                preview.style.display = 'block';
-            }
-
-            if (file) {
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = '#';
-                preview.style.display = 'none';
-            }
-        }
+        function previewImages(input) {
+                    var previewContainer = document.getElementById('imagePreviews');
+                    previewContainer.innerHTML = ''; // Clear previous previews
+            
+                    var files = input.files;
+                    console.log("Number of files:", files.length);
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        var reader = new FileReader();
+            
+                        reader.onloadend = function () {
+                            var preview = document.createElement('img');
+                            preview.src = reader.result;
+                            preview.style.maxWidth = '100%';
+                            previewContainer.appendChild(preview);
+                        }
+            
+                        if (file) {
+                            reader.readAsDataURL(file);
+                        }
+                    }
+                }
     </script>
 {% endblock %}

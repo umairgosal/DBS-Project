@@ -2,6 +2,8 @@
 
 {% load custom_filters %}
 
+{% load static %}
+
 {% block title %}
     Listing
 {% endblock %} 
@@ -27,13 +29,28 @@
 <div class="listing">
     <div class="listingTop">
         <div class="listingTopLeft">
-            <div class="listingTopLeft__image">
-                <img class="listingTopLeft__image" src="data:image/jpeg;base64,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" alt="picture here">
+            <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+
             </div>
-            <div class="listingTopLeft__lister">
-                <p class="lister__heading">Listed by</p>
-                <p class="lister__username"><a href="{% url 'profile' listing.lister %}">{{ listing.lister }}</a></p>
-            </div>
+            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in images %}
+                        <div class="carousel-item active">
+                            {% with image.image_url as image_static %}
+                            <img src="{% static image_static %}" class="d-block w-50" alt="...">
+                            {% endwith %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
         </div>
         <div class="listingTopRight">
             <div class="listingTopRightDetails">
